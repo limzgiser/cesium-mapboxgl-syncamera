@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>相机参数</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  
+ 
+    <script src="https://cesiumjs.org/releases/1.58/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesiumjs.org/releases/1.58/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .main {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .map {
+            flex: 1;
+            height: 100vh;
+        }
+
+        #textArea {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            /* height: 300px; */
+            background-color: #fff;
+            display: flex;
+            padding: 20px;
+            flex-direction: column;
+
+        }
+
+        #info2 {
+            position: absolute;
+            top: 20px;
+            right: 340px;
+            width: 300px;
+            /* height: 300px; */
+            background-color: #fff;
+            display: flex;
+            padding: 20px;
+            flex-direction: column;
+
+        }
+
+        #info>* {
+            height: 35px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="map" id='cesium-map'></div>
+        <textarea id="textArea"  rows="10" cols="15"></textarea>
+              
+   
+    </div>
+    <script>
+        const layer =    new Cesium.UrlTemplateImageryProvider({
+        url: "http://mt1.google.cn/vt/lyrs=s&hl=zh-CN&x={x}&y={y}&z={z}"
+        // url: "http://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+      });
+        let viewer = new Cesium.Viewer('cesium-map', {
+            imageryProvider: layer, // 指定此项 则必须设置： baseLayerPicker: false
+            homeButton: false,
+            selectionIndicator: false,
+            animation: false,
+            baseLayerPicker: false,
+            // sceneMode: Cesium.SceneMode.COLUMBUS_VIEW,
+            geocoder: false,
+            timeline: false,
+            sceneModePicker: false,
+            navigationHelpButton: false,
+            infoBox: false,
+            fullscreenButton: false,
+        });
+        viewer.scene.screenSpaceCameraController.tiltEventTypes = [Cesium.CameraEventType.RIGHT_DRAG];
+        viewer.scene.screenSpaceCameraController.zoomEventTypes = [Cesium.CameraEventType.WHEEL];
+        const { xmin, ymin, xmax, ymax } = {
+            xmin: 120.67967269912378,
+            ymin: 31.2938931596835,
+            xmax: 120.70445265714949,
+            ymax: 31.34402267651852,
+        };
+        const rectangle = Cesium.Rectangle.fromDegrees(xmin, ymin, xmax, ymax);
+        viewer.camera.setView({
+            destination: rectangle,
+        });
+        // viewer.clock.onTick.addEventListener(() => {
+        //     // let res =
+        //     //     ` <div> lng:${viewer.camera.positionCartographic.longitude / Math.PI * 180}</div>
+        //     //     <div> lat:${viewer.camera.positionCartographic.latitude / Math.PI * 180}</div>
+        //     //     <div> height:${viewer.camera.positionCartographic.height}</div>
+        //     //     <div> pitch:${viewer.camera.pitch / Math.PI * 180}</div>
+        //     //     <div> heading:${viewer.camera.heading / Math.PI * 180}</div>
+        //     // `
+        //     // document.getElementById('info').innerHTML = res;
+        
+        // });
+         viewer.scene.camera.moveEnd.addEventListener(() => {
+            let info = {
+                "position": [viewer.camera.positionCartographic.longitude / Math.PI * 180, 
+                viewer.camera.positionCartographic.latitude  / Math.PI * 180, 
+                viewer.camera.positionCartographic.height],
+                "pitch": viewer.camera.pitch / Math.PI * 180,
+                "heading": viewer.camera.heading / Math.PI * 180,
+                "roll": viewer.camera.roll / Math.PI * 180,
+            };
+            document.getElementById('textArea').value = JSON.stringify(info);
+		 
+		})
+		.bind(viewer.camera);
+    </script>
+</body>
+
+</html>
