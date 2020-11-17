@@ -134,6 +134,8 @@ updateMapBoxCamera(mapboxmap) {
   }
 ```
 
+![Image](https://github.com/limzgiser/cesium-mapboxgl-syncamera/blob/main/img/img01.png?raw=true)
+
 
 
 
