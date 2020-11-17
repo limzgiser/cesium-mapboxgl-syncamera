@@ -21,7 +21,7 @@ mapbox-gl 相机  《==》 cesium相机
 
 ### 关键公式
 
-- 根据mapbox中zoom级别计算cesium中相机高度
+- 根据cesium相机高度计算mapbox地图zoom级
 
 ``` javascript
 function getElevationByZoom(map, zoom) {
@@ -41,7 +41,7 @@ function getZoomByElevation(map, elevation) {
 ### 问题
 
 - 计算为近视计算、不过相互变换后的差距不大，可以根据 具体情况调试参数。
-- cesium pitch倾角范围为 - 90至0，mapbox中为 0 - 60 当cesium倾角高度60时候，同步到mapbox中会计算出偏差比较大的相机位置
+- cesium pitch倾角范围为 -90至0，mapbox中为 0 - 60 当cesium倾角超过60度时候，同步到mapbox中会计算出偏差比较大的地图级别
 - 计算收到屏幕宽度的影响
 
 ### 关于问题
@@ -57,7 +57,7 @@ getElevationByZoom(map, pzoom) {
     if (clientW < 960) {
       szoom = 1 - 960 / document.body.clientWidth;
     } else {
-      szoom = document.body.clientWidth / 960 - 1;   // 1920 1 / 1440 0.5 / 960 0
+      szoom = document.body.clientWidth / 960 - 1;   // 1920 1  /  1440  0.5   /   960 0
     }
     const zoom = pzoom - szoom; // * ;
     return (
@@ -78,7 +78,7 @@ getZoomByElevation(map, elevation) {
     if (clientW < 960) {
       szoom = 1 - 960 / document.body.clientWidth;
     } else {
-      szoom = document.body.clientWidth / 960 - 1;   // 1920 1 / 1440 0.5 / 960 0
+      szoom = document.body.clientWidth / 960 - 1;   // 1920 1  /  1440  0.5   /   960 0
     }
     return Math.log2(
       (2 * Math.PI * 6378137.0) /
